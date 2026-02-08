@@ -5,6 +5,17 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Service role client for admin operations (bypasses RLS)
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export const supabaseAdmin = supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : supabase; // Fallback to regular client if service key not available
+
 // Types from your database
 export type SubscriberApplication = {
   id: string;
@@ -36,4 +47,16 @@ export type User = {
   full_name?: string;
   role: 'admin' | 'user';
   created_at: string;
+};
+
+export type Vendor = {
+  id: string;
+  user_id: string;
+  name: string;
+  description?: string;
+  email?: string;
+  location?: string;
+  subscription_tier?: string;
+  subscription_status?: 'active' | 'inactive' | 'cancelled' | string;
+  created_at?: string;
 };

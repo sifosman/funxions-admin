@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { Menu, X } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '📊' },
   { href: '/dashboard/applications', label: 'Applications', icon: '📝' },
-  { href: '/dashboard/users', label: 'Users', icon: '👥' },
+  { href: '/dashboard/users', label: 'Attendees', icon: '👥' },
   { href: '/dashboard/vendors', label: 'Vendors', icon: '🏪' },
   { href: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
 ];
@@ -22,6 +23,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -73,10 +75,26 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md flex flex-col">
-        <div className="p-6 border-b">
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-md flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="p-6 border-b flex items-center justify-between">
           <h1 className="text-xl font-bold text-gray-900">Vibeventz Admin</h1>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
         
         <nav className="flex-1 p-4 space-y-1">
@@ -111,8 +129,22 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
+      <main className="flex-1 overflow-auto lg:ml-0">
+        {/* Mobile header */}
+        <div className="lg:hidden bg-white shadow-sm border-b">
+          <div className="px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">Vibeventz Admin</h1>
+            <div className="w-10" /> {/* Spacer for balance */}
+          </div>
+        </div>
+        
+        <div className="p-4 lg:p-8">
           {children}
         </div>
       </main>
