@@ -25,15 +25,23 @@ export default function LoginPage() {
       if (error) throw error;
 
       // Check if user is admin
-      const { data: userData } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('role')
+        .select('role, full_name, auth_user_id')
         .eq('auth_user_id', data.user.id)
         .single();
 
-      if (userData?.role !== 'admin') {
+      if (userError) {
+        throw new Error(`User lookup failed: ${userError.message}`);
+      }
+
+      if (!userData) {
+        throw new Error('User record not found in database. Please contact administrator.');
+      }
+
+      if (userData.role !== 'admin') {
         await supabase.auth.signOut();
-        throw new Error('Unauthorized. Admin access only.');
+        throw new Error(`Unauthorized. User role is "${userData.role}". Admin access only.`);
       }
 
       router.push('/dashboard');

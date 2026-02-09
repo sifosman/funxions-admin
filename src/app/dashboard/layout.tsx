@@ -11,6 +11,7 @@ const navItems = [
   { href: '/dashboard/applications', label: 'Applications', icon: '📝' },
   { href: '/dashboard/users', label: 'Attendees', icon: '👥' },
   { href: '/dashboard/vendors', label: 'Vendors', icon: '🏪' },
+  { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: '💳' },
   { href: '/dashboard/analytics', label: 'Analytics', icon: '📈' },
 ];
 

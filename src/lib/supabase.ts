@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -58,5 +58,60 @@ export type Vendor = {
   location?: string;
   subscription_tier?: string;
   subscription_status?: 'active' | 'inactive' | 'cancelled' | string;
+  subscription_started_at?: string;
+  subscription_expires_at?: string;
+  billing_period?: 'monthly' | 'yearly';
+  billing_email?: string;
+  billing_name?: string;
+  billing_phone?: string;
+  next_payment_due?: string;
+  last_payment_at?: string;
+  reminder_5day_sent?: boolean;
+  reminder_1day_sent?: boolean;
   created_at?: string;
+};
+
+export type VendorSubscription = {
+  id: string;
+  user_id: string;
+  name: string;
+  email?: string;
+  location?: string;
+  subscription_tier: string;
+  subscription_status: 'active' | 'inactive' | 'cancelled' | 'expired';
+  subscription_started_at?: string;
+  subscription_expires_at?: string;
+  billing_period?: 'monthly' | 'yearly';
+  billing_email?: string;
+  billing_name?: string;
+  billing_phone?: string;
+  next_payment_due?: string;
+  last_payment_at?: string;
+  reminder_5day_sent?: boolean;
+  reminder_1day_sent?: boolean;
+  days_until_expiry?: number;
+  photo_usage_count?: number;
+  total_invoices?: number;
+  total_paid?: number;
+  needs_5day_reminder?: boolean;
+  needs_1day_reminder?: boolean;
+  created_at?: string;
+};
+
+export type SubscriptionInvoice = {
+  id: string;
+  vendor_id: string;
+  invoice_number: string;
+  amount: number;
+  tier: string;
+  billing_period: 'monthly' | 'yearly';
+  status: 'pending' | 'paid' | 'failed' | 'cancelled';
+  payment_method?: string;
+  payfast_payment_id?: string;
+  billing_email?: string;
+  billing_name?: string;
+  billing_phone?: string;
+  created_at: string;
+  paid_at?: string;
+  due_date?: string;
 };
