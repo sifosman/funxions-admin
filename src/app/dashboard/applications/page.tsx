@@ -44,6 +44,10 @@ export default function ApplicationsPage() {
       const { data, error } = await query;
 
       if (error) throw error;
+      
+      console.log('Fetched applications count:', data?.length);
+      console.log('Fetched application IDs:', data?.map(app => app.id));
+      
       setApplications(data || []);
     } catch (error) {
       console.error('Error fetching applications:', error);
@@ -111,15 +115,40 @@ export default function ApplicationsPage() {
 
   const deleteApplication = async (id: string) => {
     try {
-      const { error } = await supabase
+      console.log('Deleting application with ID:', id);
+      
+      const { data, error, count } = await supabase
         .from('subscriber_applications')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
 
+      console.log('Delete response - data:', data, 'count:', count);
+      
+      if (!data || data.length === 0) {
+        console.warn('No rows were deleted - possibly blocked by RLS policy');
+        alert('Failed to delete application. You may not have permission.');
+        return;
+      }
+
+      console.log('Application deleted successfully');
+      
+      // Update local state immediately by filtering out the deleted application
+      setApplications(prevApps => {
+        const filtered = prevApps.filter(app => app.id !== id);
+        console.log('Updated applications count:', filtered.length);
+        return filtered;
+      });
+      
       setSelectedApp(null);
       setShowDeleteConfirm(false);
+      
+      // Also fetch fresh data from server to ensure sync
       await fetchApplications();
     } catch (error) {
       console.error('Error deleting application:', error);
