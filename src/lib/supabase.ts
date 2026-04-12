@@ -3,7 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  }
+});
 
 // Service role client for admin operations (bypasses RLS)
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -115,3 +121,77 @@ export type SubscriptionInvoice = {
   paid_at?: string;
   due_date?: string;
 };
+
+// Storage bucket helper functions
+export const STORAGE_BUCKETS = {
+  BUSINESS_DOCUMENTS: 'business-documents',
+  PORTFOLIO_IMAGES: 'portfolio-images',
+  PORTFOLIO_VIDEOS: 'portfolio-videos',
+} as const;
+
+/**
+ * Get public URL for a file stored in Supabase Storage
+ * @param bucket - The storage bucket name
+ * @param path - The file path within the bucket
+ * @returns Public URL for the file
+ */
+export function getStoragePublicUrl(bucket: string, path: string): string {
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/**
+ * Convert a file path or URL to a proper public URL
+ * If already a full URL, returns as-is
+ * If a path, generates public URL from the appropriate bucket
+ * @param filePathOrUrl - File path or URL
+ * @param bucket - The storage bucket name (optional, will try to detect)
+ * @returns Public URL
+ */
+export function normalizeStorageUrl(filePathOrUrl: string, bucket?: string): string {
+  // If already a full URL, return as-is
+  if (filePathOrUrl.startsWith('http://') || filePathOrUrl.startsWith('https://')) {
+    return filePathOrUrl;
+  }
+  
+  // If bucket is provided, use it
+  if (bucket) {
+    return getStoragePublicUrl(bucket, filePathOrUrl);
+  }
+  
+  // Try to detect bucket from path
+  if (filePathOrUrl.includes('business-documents') || filePathOrUrl.includes('documents')) {
+    return getStoragePublicUrl(STORAGE_BUCKETS.BUSINESS_DOCUMENTS, filePathOrUrl);
+  } else if (filePathOrUrl.includes('images') || filePathOrUrl.includes('photos')) {
+    return getStoragePublicUrl(STORAGE_BUCKETS.PORTFOLIO_IMAGES, filePathOrUrl);
+  } else if (filePathOrUrl.includes('videos')) {
+    return getStoragePublicUrl(STORAGE_BUCKETS.PORTFOLIO_VIDEOS, filePathOrUrl);
+  }
+  
+  // Default: assume it's already a valid URL or return as-is
+  return filePathOrUrl;
+}
+
+/**
+ * Get signed URL for private files (with expiration)
+ * @param bucket - The storage bucket name
+ * @param path - The file path within the bucket
+ * @param expiresIn - Expiration time in seconds (default: 3600 = 1 hour)
+ * @returns Signed URL for the file
+ */
+export async function getStorageSignedUrl(
+  bucket: string,
+  path: string,
+  expiresIn: number = 3600
+): Promise<string | null> {
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .createSignedUrl(path, expiresIn);
+  
+  if (error) {
+    console.error('Error creating signed URL:', error);
+    return null;
+  }
+  
+  return data?.signedUrl || null;
+}
