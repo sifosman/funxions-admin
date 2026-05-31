@@ -1,7 +1,16 @@
  'use client';
 
- import { useEffect, useMemo, useState } from 'react';
- import { supabase } from '@/lib/supabase';
+import { useEffect, useMemo, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import {
+  ArrowRight,
+  BarChart3,
+  Calendar,
+  RefreshCw,
+  Search,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
 
  type RangeKey = '7d' | '30d' | '90d';
 
@@ -105,100 +114,113 @@
      }
    };
 
-   if (loading) {
-     return (
-       <div className="flex items-center justify-center h-64">
-         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-       </div>
-     );
-   }
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
-   const cards = [
-     { label: 'Total Users', value: stats.totalUsers, color: 'bg-blue-500' },
-     { label: 'Total Vendors', value: stats.totalVendors, color: 'bg-green-500' },
-     { label: 'Total Applications', value: stats.totalApplications, color: 'bg-purple-500' },
-     { label: 'Pending Applications', value: stats.pendingApplications, color: 'bg-yellow-500' },
-   ];
+  const rangeLabel = range === '7d' ? 'Last 7 days' : range === '30d' ? 'Last 30 days' : 'Last 90 days';
 
-   const rangeLabel = range === '7d' ? 'Last 7 days' : range === '30d' ? 'Last 30 days' : 'Last 90 days';
+  const cards = [
+    { label: 'Total Users', value: stats.totalUsers, icon: Users, color: 'from-blue-600 to-sky-400' },
+    { label: 'Total Vendors', value: stats.totalVendors, icon: BarChart3, color: 'from-emerald-500 to-teal-400' },
+    { label: 'Total Applications', value: stats.totalApplications, icon: TrendingUp, color: 'from-violet-500 to-indigo-400' },
+    { label: 'Pending Applications', value: stats.pendingApplications, icon: Calendar, color: 'from-amber-500 to-orange-400' },
+  ];
 
-   return (
-     <div>
-       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-         <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
+  return (
+    <div className="space-y-6 lg:space-y-8">
+      <section className="rounded-[28px] border border-slate-200 bg-white px-6 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)] lg:px-8 lg:py-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 lg:text-4xl">Analytics</h1>
+            <p className="mt-2 text-sm text-slate-500">Track platform growth and engagement metrics over time.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 rounded-2xl bg-slate-100 p-1">
+              <button className="rounded-xl px-4 py-2 text-sm font-medium text-slate-600">Period</button>
+              <select
+                value={range}
+                onChange={(e) => setRange(e.target.value as RangeKey)}
+                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm outline-none"
+              >
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
+                <option value="90d">Last 90 days</option>
+              </select>
+            </div>
+            <button
+              onClick={fetchAnalytics}
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </button>
+          </div>
+        </div>
 
-         <div className="flex gap-3 items-center">
-           <select
-             value={range}
-             onChange={(e) => setRange(e.target.value as RangeKey)}
-             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-           >
-             <option value="7d">Last 7 days</option>
-             <option value="30d">Last 30 days</option>
-             <option value="90d">Last 90 days</option>
-           </select>
-           <button
-             onClick={fetchAnalytics}
-             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium"
-           >
-             Refresh
-           </button>
-         </div>
-       </div>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <article key={stat.label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-500">{stat.label}</p>
+                    <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{stat.value}</p>
+                  </div>
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.color} text-white shadow-[0_12px_24px_rgba(37,99,235,0.18)]`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-         {cards.map((c) => (
-           <div key={c.label} className="bg-white rounded-lg shadow p-6">
-             <div className="flex items-center">
-               <div className={`${c.color} rounded-full p-3 mr-4`}>
-                 <div className="w-6 h-6 text-white font-bold text-center">{c.value}</div>
-               </div>
-               <div>
-                 <p className="text-sm font-medium text-gray-600">{c.label}</p>
-                 <p className="text-2xl font-bold text-gray-900">{c.value}</p>
-               </div>
-             </div>
-           </div>
-         ))}
-       </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-950">Application Status</h2>
+          <div className="mt-6 space-y-4">
+            {[
+              { label: 'Approved', value: stats.approvedApplications, color: 'from-emerald-500 to-teal-400' },
+              { label: 'Rejected', value: stats.rejectedApplications, color: 'from-rose-500 to-red-400' },
+              { label: 'Pending', value: stats.pendingApplications, color: 'from-amber-500 to-orange-400' },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`h-2 w-2 rounded-full bg-gradient-to-r ${item.color}`} />
+                  <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                </div>
+                <span className="text-2xl font-semibold tracking-tight text-slate-950">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-         <div className="bg-white rounded-lg shadow p-6">
-           <h2 className="text-xl font-semibold text-gray-900 mb-4">Application Status</h2>
-           <div className="space-y-3">
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">Approved</span>
-               <span className="font-semibold text-gray-900">{stats.approvedApplications}</span>
-             </div>
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">Rejected</span>
-               <span className="font-semibold text-gray-900">{stats.rejectedApplications}</span>
-             </div>
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">Pending</span>
-               <span className="font-semibold text-gray-900">{stats.pendingApplications}</span>
-             </div>
-           </div>
-         </div>
-
-         <div className="bg-white rounded-lg shadow p-6">
-           <h2 className="text-xl font-semibold text-gray-900 mb-4">Growth ({rangeLabel})</h2>
-           <div className="space-y-3">
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">New Users</span>
-               <span className="font-semibold text-gray-900">{stats.newUsersInRange}</span>
-             </div>
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">New Vendors</span>
-               <span className="font-semibold text-gray-900">{stats.newVendorsInRange}</span>
-             </div>
-             <div className="flex items-center justify-between">
-               <span className="text-gray-700">New Applications</span>
-               <span className="font-semibold text-gray-900">{stats.newApplicationsInRange}</span>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-   );
- }
+        <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-950">Growth ({rangeLabel})</h2>
+          <div className="mt-6 space-y-4">
+            {[
+              { label: 'New Users', value: stats.newUsersInRange, color: 'from-blue-500 to-sky-400' },
+              { label: 'New Vendors', value: stats.newVendorsInRange, color: 'from-emerald-500 to-teal-400' },
+              { label: 'New Applications', value: stats.newApplicationsInRange, color: 'from-violet-500 to-indigo-400' },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`h-2 w-2 rounded-full bg-gradient-to-r ${item.color}`} />
+                  <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                </div>
+                <span className="text-2xl font-semibold tracking-tight text-slate-950">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
