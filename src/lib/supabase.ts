@@ -55,37 +55,6 @@ export type User = {
   created_at: string;
 };
 
-export type BlogPost = {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt?: string;
-  featured_image_url?: string;
-  author_id?: number;
-  published_at?: string;
-  status: 'draft' | 'published' | 'archived';
-  categories?: string[];
-  tags?: string[];
-  view_count: number;
-  comment_count: number;
-  created_at: string;
-  updated_at: string;
-  cover_image_url?: string;
-  author_name?: string;
-  author_avatar_url?: string;
-  category?: string;
-  is_published: boolean;
-  read_time_minutes: number;
-  audience: string;
-  video_url?: string;
-  media_gallery?: { url: string; type: 'image' | 'video'; caption?: string }[];
-  related_post_ids?: number[];
-  meta_title?: string;
-  meta_description?: string;
-  app_display_areas?: string[];
-};
-
 export type Vendor = {
   id: string;
   user_id: string;
@@ -158,7 +127,6 @@ export const STORAGE_BUCKETS = {
   BUSINESS_DOCUMENTS: 'business-documents',
   PORTFOLIO_IMAGES: 'portfolio-images',
   PORTFOLIO_VIDEOS: 'portfolio-videos',
-  BLOG_IMAGES: 'blog-images',
 } as const;
 
 /**
@@ -198,10 +166,8 @@ export function normalizeStorageUrl(filePathOrUrl: string, bucket?: string): str
     return getStoragePublicUrl(STORAGE_BUCKETS.PORTFOLIO_IMAGES, filePathOrUrl);
   } else if (filePathOrUrl.includes('portfolio-videos') || filePathOrUrl.includes('videos')) {
     return getStoragePublicUrl(STORAGE_BUCKETS.PORTFOLIO_VIDEOS, filePathOrUrl);
-  } else if (filePathOrUrl.includes('blog-images')) {
-    return getStoragePublicUrl(STORAGE_BUCKETS.BLOG_IMAGES, filePathOrUrl);
   }
-  
+
   // Default: assume it's already a valid URL or return as-is
   return filePathOrUrl;
 }

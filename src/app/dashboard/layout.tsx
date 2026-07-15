@@ -12,7 +12,6 @@ import {
   LayoutGrid,
   LineChart,
   Menu,
-  Newspaper,
   Search,
   Settings,
   Sparkles,
@@ -38,7 +37,6 @@ const navItems = [
       { href: '/dashboard/users', label: 'Attendees', icon: Users },
       { href: '/dashboard/vendors', label: 'Vendors', icon: Store },
       { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: WalletCards },
-      { href: '/dashboard/blog', label: 'Blog Posts', icon: Newspaper },
     ],
   },
   {
