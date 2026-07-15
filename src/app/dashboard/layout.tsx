@@ -18,6 +18,7 @@ import {
   Users,
   WalletCards,
   Store,
+  MapPin,
   X,
   LogOut,
 } from 'lucide-react';
@@ -36,6 +37,7 @@ const navItems = [
       { href: '/dashboard/applications', label: 'Applications', icon: FileText },
       { href: '/dashboard/users', label: 'Attendees', icon: Users },
       { href: '/dashboard/vendors', label: 'Vendors', icon: Store },
+      { href: '/dashboard/venues', label: 'Venues', icon: MapPin },
       { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: WalletCards },
     ],
   },

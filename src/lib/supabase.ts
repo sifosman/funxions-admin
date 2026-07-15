@@ -77,6 +77,43 @@ export type Vendor = {
   created_at?: string;
 };
 
+export type Venue = {
+  id: string;
+  user_id: string;
+  name: string;
+  description?: string;
+  location?: string;
+  contact_email?: string;
+  whatsapp_number?: string;
+  website_url?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  tiktok_url?: string;
+  linkedin_url?: string;
+  venue_type?: string;
+  venue_capacity?: string;
+  amenities?: Record<string, any>;
+  event_types?: Record<string, any>;
+  provinces?: string[];
+  cities?: string[];
+  image_url?: string;
+  subscription_plan?: string;
+  subscription_status?: 'active' | 'inactive' | 'cancelled' | string;
+  subscription_expires_at?: string;
+  rating?: number;
+  review_count?: number;
+  province?: string;
+  city?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  suburb?: string;
+  postal_code?: string;
+  country?: string;
+  additional_photos?: string[];
+  created_at: string;
+  updated_at: string;
+};
+
 export type VendorSubscription = {
   id: string;
   user_id: string;
