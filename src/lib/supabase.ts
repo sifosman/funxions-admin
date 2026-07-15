@@ -122,6 +122,69 @@ export type SubscriptionInvoice = {
   due_date?: string;
 };
 
+// Admin settings types
+export type PlatformConfig = {
+  tierNames: {
+    get_started: string;
+    premium: string;
+    premium_plus: string;
+  };
+  tierPrices: {
+    get_started: number;
+    premium: number;
+    premium_plus: number;
+  };
+  defaultReviewThreshold: 'manual' | 'auto_approve' | 'auto_reject';
+};
+
+export type NotificationPrefs = {
+  newApplications: boolean;
+  expiringSubs: boolean;
+  weeklySummary: boolean;
+  paymentAlerts: boolean;
+};
+
+export type SecurityPrefs = {
+  twoFactorEnabled: boolean;
+  sessionTimeout: number;
+};
+
+export type AdminSettingKey = 'platform_config' | 'notification_prefs' | 'security_prefs';
+
+export type AdminSetting = {
+  id: number;
+  setting_key: AdminSettingKey;
+  setting_value: PlatformConfig | NotificationPrefs | SecurityPrefs;
+  updated_by?: string;
+  updated_at?: string;
+};
+
+export const DEFAULT_PLATFORM_CONFIG: PlatformConfig = {
+  tierNames: {
+    get_started: 'Get Started',
+    premium: 'Premium',
+    premium_plus: 'Premium Plus',
+  },
+  tierPrices: {
+    get_started: 0,
+    premium: 299,
+    premium_plus: 599,
+  },
+  defaultReviewThreshold: 'manual',
+};
+
+export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
+  newApplications: true,
+  expiringSubs: true,
+  weeklySummary: false,
+  paymentAlerts: true,
+};
+
+export const DEFAULT_SECURITY_PREFS: SecurityPrefs = {
+  twoFactorEnabled: false,
+  sessionTimeout: 30,
+};
+
 // Storage bucket helper functions
 export const STORAGE_BUCKETS = {
   BUSINESS_DOCUMENTS: 'business-documents',

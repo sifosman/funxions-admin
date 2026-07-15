@@ -133,11 +133,11 @@ export default function DashboardLayout({
         <div className="flex items-center justify-between border-b border-[#EDE9DD] px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#113f59] via-[#9DCFDB] to-[#D9EBE8] p-1 shadow-[0_10px_24px_rgba(17,63,89,0.35)]">
-              <Image src="/icon.png" alt="Funcxon" width={36} height={36} className="rounded-lg" />
+              <Image src="/icon.png" alt="Funxon" width={36} height={36} className="rounded-lg" />
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#113f59]">Admin panel</p>
-              <h1 className="text-lg font-semibold text-slate-900">Funcxon</h1>
+              <h1 className="text-lg font-semibold text-slate-900">Funxon</h1>
             </div>
           </div>
           <button
@@ -229,7 +229,7 @@ export default function DashboardLayout({
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#113f59]">Dashboard</p>
-                  <p className="text-sm font-semibold text-slate-900">Funcxon Admin</p>
+                  <p className="text-sm font-semibold text-slate-900">Funxon Admin</p>
                 </div>
               </div>
               <button

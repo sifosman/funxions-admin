@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
@@ -81,33 +82,37 @@ export default function LoginPage() {
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F6F0]">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#113f59]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <div>
-          <h2 className="text-3xl font-bold text-center text-gray-900">
-            Vibeventz Admin
+    <div className="flex min-h-screen items-center justify-center bg-[#F8F6F0] px-4 py-10">
+      <div className="w-full max-w-md space-y-8 rounded-3xl border border-[#EDE9DD] bg-white p-8 shadow-[0_10px_40px_rgba(71,115,114,0.08)] sm:p-10">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#113f59] via-[#9DCFDB] to-[#D9EBE8] p-1.5 shadow-[0_10px_24px_rgba(17,63,89,0.35)]">
+            <Image src="/icon.png" alt="Funxon" width={44} height={44} className="rounded-xl" />
+          </div>
+          <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#113f59]">Admin panel</p>
+          <h2 className="mt-1 text-2xl font-bold text-slate-900">
+            Funxon
           </h2>
-          <p className="mt-2 text-center text-gray-600">
+          <p className="mt-2 text-sm text-slate-500">
             Sign in to access the admin dashboard
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        <form className="space-y-5" onSubmit={handleLogin}>
           {error && (
-            <div className="bg-red-50 text-red-500 p-3 rounded text-sm">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
               Email address
             </label>
             <input
@@ -116,12 +121,12 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1.5 h-12 block w-full rounded-2xl border border-[#EDE9DD] bg-white px-4 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#9DCFDB] focus:ring-4 focus:ring-[#D9EBE8]"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
               Password
             </label>
             <input
@@ -130,14 +135,14 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1.5 h-12 block w-full rounded-2xl border border-[#EDE9DD] bg-white px-4 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#9DCFDB] focus:ring-4 focus:ring-[#D9EBE8]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#113f59] px-4 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(17,63,89,0.28)] transition hover:bg-[#9DCFDB] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#113f59] disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
